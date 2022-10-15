@@ -1,36 +1,46 @@
-import { createApp } from "vue"
-import { merge, mergeWith } from "lodash-es"
-import { createPinia } from "pinia"
+import { merge } from 'lodash-es'
+import { createPinia } from 'pinia'
+import { createApp } from 'vue'
 
-import App from "./App.vue"
-import router from "./router"
+import App from './App.vue'
+import router from './router'
 
-import "./assets/main.css"
-import "amfe-flexible"
+// vant
+
+// Toast
+import { Toast, Notify, Dialog } from 'vant'
+import 'vant/es/toast/style'
+import 'vant/es/dialog/style'
+import 'vant/es/notify/style'
+// import 'vant/es/image-preview/style'
+
+import 'amfe-flexible'
+import './assets/main.css'
 
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+app.use(Toast, Notify, Dialog)
 
-app.mount("#app")
+app.mount('#app')
 
 const a = {
-  a: "a",
+  a: 'a',
   getA() {
-    return "a"
+    return 'a'
   },
 }
 
 const b = {
-  b: "1",
+  b: '1',
   getA() {
-    return "b"
+    return 'b'
   },
 }
 
 const res = merge(a, b)
 
 console.log(res, a)
-res.a = "123"
+res.a = '123'
 console.log(res, a)

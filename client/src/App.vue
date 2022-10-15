@@ -10,9 +10,7 @@
   <div>
     button:
     <br />
-    <van-button type="primary" @click="handleClick">
-      button
-    </van-button>
+    <van-button type="primary" @click="handleClick"> button </van-button>
   </div>
 
   <div class="box"></div>
@@ -20,6 +18,7 @@
 
 <script setup>
 import { getBooks } from '@api'
+import { defaultLogger } from './utils/logger'
 
 const handleClick = () => {
   console.log('ok')
@@ -27,6 +26,8 @@ const handleClick = () => {
     console.log('res: ', res)
   })
 }
+
+defaultLogger.log('ok')
 </script>
 
 <style scoped>
