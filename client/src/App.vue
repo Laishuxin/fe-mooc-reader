@@ -1,7 +1,13 @@
 <script setup></script>
 
 <template>
-  app
+  <div>
+    app
+    <RouterLink to="/">Home</RouterLink>
+    <RouterLink to="/about">About</RouterLink>
+    
+    <RouterView></RouterView>
+  </div>
 </template>
 
 <style scoped></style>
