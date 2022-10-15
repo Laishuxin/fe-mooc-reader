@@ -14,6 +14,12 @@
       button
     </van-button>
   </div>
+
+  <div class="box"></div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.box {
+  display: flex;
+}
+</style>
