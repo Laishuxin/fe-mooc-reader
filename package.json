@@ -1,8 +1,7 @@
 {
-  "dependencies": {
-    "nestjs": "^0.0.1"
+  "scripts": {
+    "start:backend": "cd ./backend && yarn start"
   },
-  "devDependencies": {
-    "@nestjs/cli": "^9.1.4"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }
