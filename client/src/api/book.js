@@ -1,5 +1,5 @@
 import { defaultHttp } from './_request'
 
-export function getBooks() {
-  return defaultHttp.get('/book')
+export function getBooks(params, config) {
+  return defaultHttp.get('/book', params, config)
 }
