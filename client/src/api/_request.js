@@ -4,6 +4,7 @@ import axios from 'axios'
 import { defaultStorage } from '@/utils/storage'
 import { errorNo, JWT_TOKEN } from '@/constant/tokens'
 import { Dialog, Notify, Toast } from 'vant'
+import { shallowMerge } from '@/utils'
 
 class MyHttp {
   constructor(options = {}) {
@@ -55,14 +56,19 @@ class MyHttp {
    * @returns { Promise<any> }
    */
   request(config) {
-    return this.http.request(config)
+    return this.http.request(config).catch((err) => {
+      if (err instanceof axios.AxiosError) {
+        cleanup(err)
+      }
+      throw err
+    })
   }
 
   /**
    * @param { import('axios').AxiosRequestConfig } config
    */
   get(url, config = {}) {
-    const mergedConfig = merge({}, config, { url, method: 'get' })
+    const mergedConfig = shallowMerge(config, { url, method: 'get' })
     return this.request(mergedConfig)
   }
 
@@ -70,7 +76,7 @@ class MyHttp {
    * @param { import('axios').AxiosRequestConfig } config
    */
   post(url, config = {}) {
-    const mergedConfig = merge({}, config, { url, method: 'post' })
+    const mergedConfig = shallowMerge(config, { url, method: 'post' })
     return this.request(mergedConfig)
   }
 
@@ -78,7 +84,7 @@ class MyHttp {
    * @param { import('axios').AxiosRequestConfig } config
    */
   put(url, config = {}) {
-    const mergedConfig = merge({}, config, { url, method: 'put' })
+    const mergedConfig = shallowMerge({}, config, { url, method: 'put' })
     return this.request(mergedConfig)
   }
 
@@ -86,7 +92,7 @@ class MyHttp {
    * @param { import('axios').AxiosRequestConfig } config
    */
   patch(url, config = {}) {
-    const mergedConfig = merge({}, config, { url, method: 'patch' })
+    const mergedConfig = shallowMerge({}, config, { url, method: 'patch' })
     return this.request(mergedConfig)
   }
 
@@ -95,7 +101,7 @@ class MyHttp {
    * @param { import('axios').AxiosRequestConfig } config
    */
   remove(url, config = {}) {
-    const mergedConfig = merge({}, config, { url, method: 'delete' })
+    const mergedConfig = shallowMerge({}, config, { url, method: 'delete' })
     return this.request(mergedConfig)
   }
 }
@@ -117,6 +123,21 @@ function performMessage(type, messageConfig, message) {
   } else {
     const notifyType = type == 'success' ? 'success' : 'danger'
     Notify(merge({ message, type: notifyType }, config))
+  }
+}
+
+/**
+ * 清理副作用
+ */
+function cleanup(resp) {
+  const { config } = resp
+  if (config._loadingInstance != null) {
+    config._loadingInstance.clear()
+    config._loadingInstance = null
+  }
+  if (config._timer != null) {
+    clearTimeout(config._timer)
+    config._timer = null
   }
 }
 
@@ -186,11 +207,21 @@ function handleOtherException(resp) {
  * @param { import('axios').AxiosRequestConfig } config
  */
 const defaultRequestInterceptor = (config) => {
-  const { headers = {} } = config
+  const { headers = {}, loading } = config
   const token = defaultStorage.getItem(JWT_TOKEN)
 
   if (token != null) {
     headers['Authorization'] = token
+  }
+
+  if (loading == true) {
+    config._timer = setTimeout(() => {
+      config._loadingInstance = Toast({
+        type: 'loading',
+        duration: 35 * 1000,
+        forbidClick: true,
+      })
+    }, 500)
   }
 
   return config
@@ -202,6 +233,7 @@ const defaultRequestInterceptor = (config) => {
 const defaultResponseInterceptor = (resp) => {
   const { data: dataFromBackend } = resp
   const { code } = dataFromBackend
+  cleanup(resp)
 
   if (code == errorNo.ok) {
     return handleSuccess(resp)

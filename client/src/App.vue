@@ -11,6 +11,7 @@
     button:
     <br />
     <van-button type="primary" @click="handleClick"> button </van-button>
+    <van-button type="primary" @click="handleLoading">loading</van-button>
   </div>
 
   <div class="box"></div>
@@ -18,6 +19,7 @@
 
 <script setup>
 import { getBooks } from '@api'
+import { Toast } from 'vant'
 import { defaultLogger } from './utils/logger'
 
 const handleClick = () => {
@@ -25,6 +27,20 @@ const handleClick = () => {
   getBooks().then((res) => {
     console.log('res: ', res)
   })
+}
+
+let instance = null
+const handleLoading = () => {
+  if (instance != null) {
+    instance.clear()
+    instance = null
+  } else {
+    instance = Toast({
+      type: 'loading',
+      duration: 30 * 1000,
+      forbidClick: true,
+    })
+  }
 }
 
 defaultLogger.log('ok')

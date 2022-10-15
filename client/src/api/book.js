@@ -1,7 +1,5 @@
 import { defaultHttp } from './_request'
 
 export function getBooks() {
-  return defaultHttp.get('/book', {
-    showMessageWhenSuccess: true,
-  })
+  return defaultHttp.get('/book')
 }
