@@ -1,22 +1,16 @@
 <template>
   <div class="default-layout">
     <div class="header-wrapper">
-      <van-row
-        class="header"
-        tag="header"
-        justify="space-between"
-        align="center"
-      >
-        <van-col class="header__left">
-          <a href="/">
-            <img class="logo" :src="logo" alt="logo" />
-          </a>
-        </van-col>
-
-        <van-col class="header__right">
-          <router-link to="/login" class="login-btn"> 登录 </router-link>
-        </van-col>
-      </van-row>
+      <m-header>
+        <template #default>
+          <router-link
+            :to="{ name: ROUTE_NAME.account, params: { type: 'login' } }"
+            class="account-link"
+          >
+            登录
+          </router-link>
+        </template>
+      </m-header>
     </div>
 
     <main class="main">
@@ -28,7 +22,8 @@
 </template>
 
 <script setup>
-import logo from '@/assets/logo.png'
+import { ROUTE_NAME } from '@/constant/tokens'
+import MHeader from '@/components/ui/m-header.vue'
 </script>
 
 <style lang="scss" scoped>
@@ -42,27 +37,13 @@ import logo from '@/assets/logo.png'
   background: #fff;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  width: 100%;
-
-  &__left {
-    .logo {
-      width: 80px;
-    }
-  }
-
-  &__right {
-    .login-btn {
-      display: block;
-      font-size: var(--van-font-size-md);
-      color: var(--van-primary-color);
-      background: var(--van-secondary-color);
-      padding: 8px 16px;
-      border-radius: 16px;
-    }
-  }
+.account-link {
+  display: block;
+  font-size: var(--van-font-size-md);
+  color: var(--van-primary-color);
+  background: var(--van-secondary-color);
+  padding: 8px 16px;
+  border-radius: 16px;
 }
 
 .main {

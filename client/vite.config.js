@@ -20,6 +20,7 @@ export default defineConfig({
       '@api': fileURLToPath(new URL('./src/api', import.meta.url)),
       '@views': fileURLToPath(new URL('./src/views', import.meta.url)),
       '@stores': fileURLToPath(new URL('./src/stores', import.meta.url)),
+      '@images': fileURLToPath(new URL('./src/assets/images', import.meta.url)),
       '@components': fileURLToPath(
         new URL('./src/components', import.meta.url),
       ),

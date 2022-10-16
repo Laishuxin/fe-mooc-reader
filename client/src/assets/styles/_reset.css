@@ -3,7 +3,7 @@
 }
 
 #app {
-  font-size: 16px;
+  font-size: var(--van-font-size-md);
 }
 
 blockquote,
@@ -55,6 +55,7 @@ ul {
 
 a {
   text-decoration: none;
+  color: var(--van-text-link-color);
 }
 
 input,

@@ -26,6 +26,9 @@
       "@api/*": [
         "./src/api/*"
       ],
+      "@images": [
+        "./src/assets/images"
+      ],
     }, /* Specify a set of entries that re-map imports to additional lookup locations. */
   },
   "include": [

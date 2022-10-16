@@ -13,5 +13,8 @@ module.exports = {
   },
   rules: {
     'vue/prefer-import-from-vue': 'off',
+    'vue/multi-word-component-names': 'off',
+    'no-unused-vars': 'warn',
+    'no-empty': 'off',
   },
 }

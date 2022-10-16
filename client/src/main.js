@@ -15,7 +15,7 @@ import 'vant/es/notify/style'
 // import 'vant/es/image-preview/style'
 
 import 'amfe-flexible'
-import './assets/main.css'
+import './assets/styles/main.css'
 
 const app = createApp(App)
 

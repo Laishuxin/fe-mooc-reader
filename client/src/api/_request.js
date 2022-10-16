@@ -2,9 +2,9 @@ import { BASE_URL } from '@/constant/env'
 import { isFunction, merge } from 'lodash-es'
 import axios from 'axios'
 import { defaultStorage } from '@/utils/storage'
-import { errorNo, JWT_TOKEN } from '@/constant/tokens'
+import { ERROR_NO, JWT_TOKEN } from '@/constant/tokens'
 import { Dialog, Notify, Toast } from 'vant'
-import { shallowMerge } from '@/utils'
+import { delay, shallowMerge } from '@/utils'
 
 class MyHttp {
   constructor(options = {}) {
@@ -52,7 +52,7 @@ class MyHttp {
   }
 
   /**
-   * @param { import('axios').AxiosRequestConfig } config
+   * @param { import('axios').AxiosRequestConfig & { loading?: boolean, showMessageWhenError?: boolean, showMessageWhenSuccess?: boolean} } config
    * @returns { Promise<any> }
    */
   request(config) {
@@ -65,7 +65,7 @@ class MyHttp {
   }
 
   /**
-   * @param { import('axios').AxiosRequestConfig } config
+   * @param { import('axios').AxiosRequestConfig & { loading?: boolean, showMessageWhenError?: boolean, showMessageWhenSuccess?: boolean} } config
    */
   get(url, config = {}) {
     const mergedConfig = shallowMerge(config, { url, method: 'get' })
@@ -73,7 +73,7 @@ class MyHttp {
   }
 
   /**
-   * @param { import('axios').AxiosRequestConfig } config
+   * @param { import('axios').AxiosRequestConfig & { loading?: boolean, showMessageWhenError?: boolean, showMessageWhenSuccess?: boolean} } config
    */
   post(url, config = {}) {
     const mergedConfig = shallowMerge(config, { url, method: 'post' })
@@ -81,27 +81,27 @@ class MyHttp {
   }
 
   /**
-   * @param { import('axios').AxiosRequestConfig } config
+   * @param { import('axios').AxiosRequestConfig & { loading?: boolean, showMessageWhenError?: boolean, showMessageWhenSuccess?: boolean} } config
    */
   put(url, config = {}) {
-    const mergedConfig = shallowMerge({}, config, { url, method: 'put' })
+    const mergedConfig = shallowMerge(config, { url, method: 'put' })
     return this.request(mergedConfig)
   }
 
   /**
-   * @param { import('axios').AxiosRequestConfig } config
+   * @param { import('axios').AxiosRequestConfig & { loading?: boolean, showMessageWhenError?: boolean, showMessageWhenSuccess?: boolean} } config
    */
   patch(url, config = {}) {
-    const mergedConfig = shallowMerge({}, config, { url, method: 'patch' })
+    const mergedConfig = shallowMerge(config, { url, method: 'patch' })
     return this.request(mergedConfig)
   }
 
   /**
    * method = 'delete'
-   * @param { import('axios').AxiosRequestConfig } config
+   * @param { import('axios').AxiosRequestConfig & { loading?: boolean, showMessageWhenError?: boolean, showMessageWhenSuccess?: boolean} } config
    */
   remove(url, config = {}) {
-    const mergedConfig = shallowMerge({}, config, { url, method: 'delete' })
+    const mergedConfig = shallowMerge(config, { url, method: 'delete' })
     return this.request(mergedConfig)
   }
 }
@@ -115,9 +115,9 @@ function performMessage(type, messageConfig, message) {
   let { containerType = 'notify', ...config } = messageConfig
 
   containerType = containerType.toLowerCase()
-  if (containerType == 'Dialog') {
+  if (containerType == 'dialog') {
     Dialog(merge({ message }, config))
-  } else if (containerType == 'Toast') {
+  } else if (containerType == 'toast') {
     const toastType = type == 'success' ? 'success' : 'fail'
     Toast(merge({ message, type: toastType }, config))
   } else {
@@ -143,7 +143,7 @@ function cleanup(resp) {
 
 function handleSuccess(resp) {
   const { data, config } = resp
-  const { data: dataFromBackend, message } = data
+  const { message, data: dataFromBackend } = data
   const { showMessageWhenSuccess, successMessageConfig = {} } = config
   if (showMessageWhenSuccess == true) {
     performMessage('success', successMessageConfig, message)
@@ -154,8 +154,7 @@ function handleSuccess(resp) {
 
 function handleUnauthorized(resp) {
   const { data, config } = resp
-  const { data: dataFromBackend } = data
-  const { message } = dataFromBackend
+  const { message } = data
   const {
     redirectToLoginWhenUnauthorized,
     logoutCleanup,
@@ -184,8 +183,7 @@ function handleUnauthorized(resp) {
 
 function handleOtherException(resp) {
   const { data, config } = resp
-  const { data: dataFromBackend } = data
-  const { message } = dataFromBackend
+  const { message } = data
   const {
     catchException,
     showMessageWhenError,
@@ -204,7 +202,7 @@ function handleOtherException(resp) {
 }
 
 /**
- * @param { import('axios').AxiosRequestConfig } config
+ * @param { import('axios').AxiosRequestConfig & { loading?: boolean, showMessageWhenError?: boolean, showMessageWhenSuccess?: boolean} } config
  */
 const defaultRequestInterceptor = (config) => {
   const { headers = {}, loading } = config
@@ -230,14 +228,17 @@ const defaultRequestInterceptor = (config) => {
 /**
  * @param { import('axios').AxiosResponse } resp
  */
-const defaultResponseInterceptor = (resp) => {
-  const { data: dataFromBackend } = resp
-  const { code } = dataFromBackend
+const defaultResponseInterceptor = async (resp) => {
+  // TODO(rushui 2022-10-16): 删除延迟相应
+  await delay(800)
+
+  const { data } = resp
+  const { code } = data
   cleanup(resp)
 
-  if (code == errorNo.ok) {
+  if (code == ERROR_NO.ok) {
     return handleSuccess(resp)
-  } else if (code == errorNo.unauthorized) {
+  } else if (code == ERROR_NO.unauthorized) {
     return handleUnauthorized(resp)
   } else {
     return handleOtherException(resp)
