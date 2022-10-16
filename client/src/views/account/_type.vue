@@ -46,6 +46,7 @@ import { JWT_TOKEN, ROUTE_NAME } from '@/constant/tokens'
 import { useRoute, useRouter } from 'vue-router'
 import { defaultStorage } from '@/utils/storage'
 import { normalizeJwtToken } from '@/utils'
+import { useAccountStore } from '@stores'
 
 const form = reactive({
   username: '',
@@ -78,6 +79,9 @@ const to = computed(() => {
 
   return res
 })
+
+const accountStore = useAccountStore()
+
 const handleSubmit = async () => {
   const fetcher = isLogin.value ? login : register
   const res = await fetcher(form, {
@@ -92,6 +96,8 @@ const handleSubmit = async () => {
   if (res != null) {
     const token = normalizeJwtToken(res.access_token)
     defaultStorage.setItem(JWT_TOKEN, token)
+
+    accountStore.getUserInfo()
     router.replace({ name: ROUTE_NAME.home })
   }
 }
@@ -99,7 +105,8 @@ const handleSubmit = async () => {
 
 <style lang="scss" scoped>
 .container {
-  background: url('@images/bg.png');
+  background: url('@images/bg.png') no-repeat;
+  height: 100vh;
 
   .wrapper {
     padding: 160px 16px 64px;

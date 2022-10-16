@@ -16,3 +16,7 @@ export function register(params, config = {}) {
     ...config,
   })
 }
+
+export function getUserInfo(config = {}) {
+  return defaultHttp.get('/member/profile', config)
+}

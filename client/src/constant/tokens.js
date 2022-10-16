@@ -8,3 +8,7 @@ export const ROUTE_NAME = {
   home: 'home',
   account: 'account',
 }
+
+export const STORES = {
+  account: 'account',
+}
