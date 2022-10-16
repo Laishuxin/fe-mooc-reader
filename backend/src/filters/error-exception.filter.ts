@@ -5,9 +5,8 @@ import {
   HttpException,
   Logger,
 } from '@nestjs/common';
-import { Request, response, Response } from 'express';
-import { isString, stubArray } from 'lodash';
-import { IS_DEV } from 'src/config/env';
+import { Response } from 'express';
+import { isString } from 'lodash';
 import {
   BAD_REQUEST,
   NOT_FOUND,

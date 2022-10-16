@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { paginate, PaginateQuery } from 'nestjs-paginate';
+import { FilterOperator, paginate, PaginateQuery } from 'nestjs-paginate';
 import { Category } from 'src/modules/category/entities/category.entity';
 import { ApiException } from 'src/exceptions';
 import { Repository } from 'typeorm';
@@ -24,16 +24,12 @@ export class BookService {
 
   async findAll(query: PaginateQuery) {
     return paginate(query, this.bookRepository, {
-      sortableColumns: [
-        'category_id',
-        // @ts-ignore
-        'evaluation_score',
-        // @ts-ignore
-        'evaluation_quantity',
-      ],
+      sortableColumns: ['evaluation_score', 'evaluation_quantity'],
+      filterableColumns: {
+        category_id: [FilterOperator.EQ],
+      },
       nullSort: 'last',
       // searchableColumns: [],
-      // @ts-ignore
       defaultSortBy: [['book_id', 'DESC']],
       relations: ['category'],
       maxLimit: 20,

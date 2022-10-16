@@ -52,6 +52,7 @@ const firstChar = computed(() => {
   right: 0;
   height: 48px;
   background: #fff;
+  z-index: 10;
 }
 
 .account-link {
