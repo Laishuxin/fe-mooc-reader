@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/home-view.vue'
 import AccountView from '@/views/account/_type.vue'
+import DetailView from '@/views/detail/_id.vue'
 import { ROUTE_NAME } from '@/constant/tokens'
 import EmptyLayout from '@/layouts/empty-layout.vue'
 // import DefaultLayout from '@/layouts/default-layout.vue'
@@ -21,6 +22,11 @@ const router = createRouter({
       meta: {
         layout: EmptyLayout,
       },
+    },
+    {
+      path: '/detail/:id',
+      name: ROUTE_NAME.bookDetail,
+      component: DetailView,
     },
   ],
 })

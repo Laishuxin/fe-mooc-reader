@@ -7,6 +7,7 @@ export const ERROR_NO = {
 export const ROUTE_NAME = {
   home: 'home',
   account: 'account',
+  bookDetail: 'bookDetail',
 }
 
 export const STORES = {

@@ -27,8 +27,32 @@
         finished-text="没有更多了"
         @load="handleLoadMore"
       >
-        <van-cell v-for="item in bookList" :key="item">
-          {{ item.book_name }}
+        <van-cell class="item" v-for="item in bookList" :key="item">
+          <router-link
+            :to="{ name: ROUTE_NAME.bookDetail, params: { id: item.book_id } }"
+          >
+            <div class="item__left">
+              <img :src="item.cover" alt="" />
+            </div>
+
+            <div class="item__right">
+              <div class="book-name">{{ item.book_name }}</div>
+              <div class="book-author">{{ item.author }}</div>
+              <div class="book-sub-title">{{ item.sub_title }}</div>
+              <div class="book-evaluation">
+                <span>{{ item.evaluation_score }}分</span>
+                <span>{{ item.evaluation_quantity }}人已评价</span>
+                <van-rate
+                  :model-value="item.evaluation_score"
+                  :size="20"
+                  allow-half
+                  color="#ffd21e"
+                  void-icon="star"
+                  void-color="#eee"
+                />
+              </div>
+            </div>
+          </router-link>
         </van-cell>
       </van-list>
     </van-pull-refresh>
@@ -37,6 +61,7 @@
 
 <script setup>
 import { getBooks, getMeta } from '@/api'
+import { ROUTE_NAME } from '@/constant/tokens'
 import { append, defaultLogger, shallowMerge } from '@/utils'
 import { Toast } from 'vant'
 import { computed, onMounted, reactive, ref, shallowRef } from 'vue'
