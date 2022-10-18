@@ -14,6 +14,13 @@ const router = createRouter({
       path: '/',
       name: ROUTE_NAME.home,
       component: HomeView,
+      meta: {
+        disableTransition: true,
+        keepAlive: true,
+        // transition: 'van-slide-right',
+        // mode: 'out-out',
+        // duration: 400,
+      },
     },
     {
       path: '/account/:type',

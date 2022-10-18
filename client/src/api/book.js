@@ -22,3 +22,12 @@ export function getBooks(params, config = {}) {
     ...config,
   })
 }
+
+/**
+ * @param { { book_id: number | string } } params
+ * @param {*} config
+ */
+export function getBookById(params, config = {}) {
+  const { book_id } = params
+  return defaultHttp.get(`/books/${book_id}`, config)
+}

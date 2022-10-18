@@ -1,34 +1,38 @@
 <template>
-  <van-sticky :offset-top="48">
-    <van-dropdown-menu>
-      <van-dropdown-item
-        v-model="pagination.categoryId"
-        :options="normalizeCategories"
-        @change="handleChange"
-      />
-      <van-dropdown-item
-        v-model="pagination.orderId"
-        :options="normalizeOrders"
-        @change="handleChange"
-      />
-    </van-dropdown-menu>
-  </van-sticky>
+  <div class="home-view">
+    <van-sticky :offset-top="48">
+      <van-dropdown-menu>
+        <van-dropdown-item
+          v-model="pagination.categoryId"
+          :options="normalizeCategories"
+          @change="handleChange"
+        />
+        <van-dropdown-item
+          v-model="pagination.orderId"
+          :options="normalizeOrders"
+          @change="handleChange"
+        />
+      </van-dropdown-menu>
+    </van-sticky>
 
-  <ul class="book-list">
-    <van-pull-refresh
-      success-text="刷新成功"
-      :model-value="refreshing"
-      @refresh="handleRefresh"
-    >
-      <van-list
-        ref="listRef"
-        :loading="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        @load="handleLoadMore"
+    <ul class="book-list">
+      <van-pull-refresh
+        success-text="刷新成功"
+        :model-value="refreshing"
+        @refresh="handleRefresh"
       >
-        <van-cell class="item" v-for="item in bookList" :key="item">
+        <van-list
+          ref="listRef"
+          :loading="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="handleLoadMore"
+        >
+          <!-- <van-cell> -->
           <router-link
+            class="item"
+            v-for="item in bookList"
+            :key="item"
             :to="{ name: ROUTE_NAME.bookDetail, params: { id: item.book_id } }"
           >
             <div class="item__left">
@@ -53,15 +57,22 @@
               </div>
             </div>
           </router-link>
-        </van-cell>
-      </van-list>
-    </van-pull-refresh>
-  </ul>
+          <!-- </van-cell> -->
+        </van-list>
+      </van-pull-refresh>
+    </ul>
+  </div>
 </template>
+
+<script>
+import { ROUTE_NAME } from '@/constant/tokens'
+export default {
+  name: ROUTE_NAME.home,
+}
+</script>
 
 <script setup>
 import { getBooks, getMeta } from '@/api'
-import { ROUTE_NAME } from '@/constant/tokens'
 import { append, defaultLogger, shallowMerge } from '@/utils'
 import { Toast } from 'vant'
 import { computed, onMounted, reactive, ref, shallowRef } from 'vue'
@@ -169,12 +180,29 @@ const handleRefresh = () => {
 }
 
 onMounted(async () => {
+  // const loadingInstance = Toast.loading({ forbidClick: true })
   try {
-    fetchBooks()
-    const _meta = await getMeta()
-    meta.value = _meta
+    await Promise.all([
+      fetchBooks(),
+      getMeta().then((_meta) => {
+        meta.value = _meta
+      }),
+    ])
   } catch (err) {}
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.item {
+  display: flex;
+  height: 200px;
+  &__left {
+    img {
+      height: 100%;
+    }
+  }
+
+  &__right {
+  }
+}
+</style>
