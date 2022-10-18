@@ -8,6 +8,7 @@ import { Evaluation } from '../evaluation/entities/evaluation.entity';
 import { EvaluationModule } from '../evaluation/evaluation.module';
 import { EvaluationService } from '../evaluation/evaluation.service';
 import { MemberEvaluationState } from '../evaluation/entities/member_evaluation_state.entity';
+import { MemberReadState } from './entities/book-read-state.entity';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { MemberEvaluationState } from '../evaluation/entities/member_evaluation_
       Category,
       Evaluation,
       MemberEvaluationState,
+      MemberReadState,
     ]),
     EvaluationModule,
   ],

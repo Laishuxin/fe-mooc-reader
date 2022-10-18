@@ -9,7 +9,11 @@
 
           <router-link
             v-else
-            :to="{ name: ROUTE_NAME.account, params: { type: 'login' } }"
+            :to="{
+              name: ROUTE_NAME.account,
+              params: { type: 'login' },
+              query: { redirect_url: $route.fullPath },
+            }"
             class="account-link"
           >
             登录

@@ -8,6 +8,7 @@ import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { Book } from './entities/book.entity';
 import { EvaluationService } from '../evaluation/evaluation.service';
+import { MemberReadState } from './entities/book-read-state.entity';
 
 @Injectable()
 export class BookService {
@@ -15,6 +16,9 @@ export class BookService {
     @InjectRepository(Book) private readonly bookRepository: Repository<Book>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(MemberReadState)
+    private readonly readStateRepository: Repository<MemberReadState>,
+
     private readonly evaluationService: EvaluationService,
   ) {}
 
@@ -60,6 +64,12 @@ export class BookService {
     return book;
   }
 
+  async getReadState(payload: { member_id: number; book_id: number }) {
+    const res = await this.readStateRepository.findOneBy(payload);
+    if (res == null) throw ApiException.notFound();
+    return res;
+  }
+
   async enjoy(payload: { memberId: number; evaluationId: number }) {
     const { evaluationId, memberId } = payload;
     return this.evaluationService.enjoy(evaluationId, memberId);
@@ -76,5 +86,27 @@ export class BookService {
 
   remove(id: number) {
     return `This action removes a #${id} book`;
+  }
+
+  async updateAllBooks(url: string) {
+    // const allBooks = await this.bookRepository.find();
+    // let res = [];
+    // for (let i = 0; i < allBooks.length; i++) {
+    //   const book = allBooks[i];
+    //   book.cover = `http://localhost:3000/public${book.cover}`;
+    //   // img.mukewang.com/5eb6781900010ba709990502.png
+    //   book.description = book.description.replaceAll(
+    //     /\/?\/(img|images).*?(png|jpeg|jpg|svg)/g,
+    //     (value) => {
+    //       if (value.startsWith('//')) {
+    //         value = value.substring(1);
+    //       }
+    //       return `http://localhost:3000/public${value}`;
+    //     },
+    //   );
+    //   book.save();
+    // }
+    // return res;
+    // console.log('allBooks: ', allBooks);
   }
 }

@@ -82,6 +82,20 @@ const to = computed(() => {
 
 const accountStore = useAccountStore()
 
+const _setToken = (token) => {
+  token = normalizeJwtToken(token)
+  defaultStorage.setItem(JWT_TOKEN, token)
+}
+
+const _redirect = () => {
+  const redirectUrl = route.query.redirect_url
+  if (redirectUrl != null) {
+    router.replace({ path: redirectUrl })
+  } else {
+    router.replace({ name: ROUTE_NAME.home })
+  }
+}
+
 const handleSubmit = async () => {
   const fetcher = isLogin.value ? login : register
   const res = await fetcher(form, {
@@ -92,14 +106,11 @@ const handleSubmit = async () => {
       containerType: 'Toast',
     },
   })
+  if (res == null) return
 
-  if (res != null) {
-    const token = normalizeJwtToken(res.access_token)
-    defaultStorage.setItem(JWT_TOKEN, token)
-
-    accountStore.getUserInfo()
-    router.replace({ name: ROUTE_NAME.home })
-  }
+  _setToken(res.access_token)
+  await accountStore.getUserInfo()
+  _redirect()
 }
 </script>
 

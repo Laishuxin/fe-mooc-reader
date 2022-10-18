@@ -7,9 +7,11 @@ import { BookModule } from './modules/book/book.module';
 import { CategoryModule } from './modules/category/category.module';
 import { EvaluationModule } from './modules/evaluation/evaluation.module';
 import { MemberModule } from './modules/member/member.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
+    MulterModule.register({}),
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'db.sqlite',

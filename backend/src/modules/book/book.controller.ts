@@ -122,10 +122,25 @@ export class BookController {
     };
   }
 
+  @Get('/read_state')
+  @UseGuards(JwtAuthGuard)
+  getBookReadState(
+    @Query('book_id') booId: number,
+    @CurrentMember() member: Member,
+  ) {
+    const { member_id } = member;
+    return this.bookService.getReadState({ member_id, book_id: booId });
+  }
+
   @Get('/evaluations')
   getEvaluations(@Query('book_id') bookId: number) {
     console.log('book_id', bookId);
     return this.bookService.findAllEvaluations(bookId);
+  }
+
+  @Get('/update_all_books')
+  updateAllBooks() {
+    return this.bookService.updateAllBooks('1');
   }
 
   @Get(':id')

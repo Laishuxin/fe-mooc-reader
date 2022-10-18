@@ -31,3 +31,14 @@ export function getBookById(params, config = {}) {
   const { book_id } = params
   return defaultHttp.get(`/books/${book_id}`, config)
 }
+
+/**
+ * @param { { book_id: number | string } } params
+ * @param {*} config
+ */
+export function getBookReadState(params, config = {}) {
+  return defaultHttp.get(`/books/read_state`, {
+    params,
+    ...config,
+  })
+}
